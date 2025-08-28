@@ -13,13 +13,11 @@ return new class extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 100);
+            $table->string('name');
             $table->text('description')->nullable();
-            $table->unsignedBigInteger('parent_id')->nullable();
             $table->integer('sort_order')->default(0);
+            $table->foreignId('parent_id')->nullable()->constrained('categories');
             $table->timestamps();
-
-             $table->foreign('parent_id')->references('id')->on('categories')->onDelete('set null');
         });
     }
 
@@ -28,11 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-
-         Schema::table('categories', function (Blueprint $table) {
-            $table->dropForeign(['parent_id']);
-        });
-        
         Schema::dropIfExists('categories');
     }
 };
